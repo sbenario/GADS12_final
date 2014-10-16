@@ -1,0 +1,15 @@
+Project Plan:
+
+
+- download and import data
+- train classifier
+- predict based on provided data
+- predict based on all new data?
+
+
+
+
+
+
+OTHER:
+- research how to architect complex python apps 

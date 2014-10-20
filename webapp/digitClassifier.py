@@ -4,8 +4,7 @@ import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 
 
-
-def loadIniitalData(datafile):
+def loadInitialData(datafile):
 	"""Input: string representing path to data file. Output is numpy array with data."""
 
 	digitsdata = ndimage.imread(datafile, flatten=True, mode='L')
@@ -18,7 +17,6 @@ def loadIniitalData(datafile):
 	#x.shape =  (50, 100, 20, 20)
 
 	X = x.reshape(5000,20,20)
-
 	X2 = np.reshape(X, (len(X), 400))
 	#400 comes out of the 20x20 shape of each entry.
 
@@ -27,9 +25,19 @@ def loadIniitalData(datafile):
 	return X2
 
 
+def trainClassifier(X):
+	"""Input: Numpy array representing X features. Output is a trained classifier."""
+
+	knn = KNeighborsClassifier(algorithm='auto', leaf_size=13, metric='minkowski',
+           n_neighbors=5, p=2, weights='uniform')
+	
+	# Create labels for the data. These are the labels for our MNIST data
+	y = np.repeat(np.arange(10),500)
+
+	knn.fit(X, y)
+	return knn
 
 
-# # Create labels for the data!
-# print np.arange(10)
-# y = np.repeat(np.arange(10),500)
+# def predcitDigit(digitArray):
+
 

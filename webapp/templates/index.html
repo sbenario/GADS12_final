@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <title>Steven's Digit Classifier</title>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  	<script src ="http://intridea.github.com/sketch.js/lib/sketch.js"></script>
+
+  </head>
+  <body>
+      <h1>This site is for classifying handwritten digits</h1>
+      <!-- {% print app %} -->
+
+      <h2>This is where you can draw a number to have it classified</h2>
+
+
+	<div class="tools">
+      <a href="#simple_sketch" data-download="png" style="float: center; width: 100px;">Download Image</a>
+    </div>
+
+      <canvas id="simple_sketch" width="200" height="200" style="border:1px solid #000000;"></canvas>
+      <BR>
+
+      <button onclick="jsDownloadImage()">Click me</button>
+
+      <p id="testing">this is my test text</p>
+      <h3>Test code output below:</h3>
+
+      <p id="output1">output1</p>
+      <p id="output2">output1</p>
+
+
+
+<!-- 
+$.ajax({
+  type: 'POST',
+  url: input,    //url of receiver file on server
+  data: data,    //your data
+  success: success,    //callback when ajax request finishes
+  dataType: mime     //text/json...
+}); -->
+
+
+
+	 <script type="text/javascript">
+  		$(function() {
+    		$('#simple_sketch').sketch();
+  		});
+    
+    	function jsDownloadImage() {
+    		var downloadurl = $('#simple_sketch')[0].toDataURL();
+    		testOutput(downloadurl);
+    	};
+
+    	function testOutput(output) {
+    		document.getElementById("output1").innerHTML = output;
+    	};
+    </script>
+
+  
+
+
+  </body>
+</html>
+
+

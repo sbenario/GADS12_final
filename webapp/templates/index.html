@@ -3,6 +3,7 @@
     <title>Steven's Digit Classifier</title>
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   	<script src ="http://intridea.github.com/sketch.js/lib/sketch.js"></script>
+  	<!--  The sketch plugin is documented here: http://intridea.github.io/sketch.js/ -->
 
   </head>
   <body>
@@ -25,7 +26,7 @@
       <h3>Test code output below:</h3>
 
       <p id="output1">output1</p>
-      <p id="output2">output1</p>
+      <p id="output2">output2</p>
 
 
 
@@ -37,8 +38,24 @@
     
     	function jsDownloadImage() {
     		var drawingData = $('#simple_sketch')[0].toDataURL();
-    		testOutput(drawingData);
-    		var postResults = $.post("input", drawingData);
+    		testOutput(btoa(drawingData));
+    		//var postResults = $.post("input", drawingData, null, "binary/octet-stream");
+    		
+    		//yet another insane hack.
+    		//drawingData represents ~base64 encoded PNG image. Including a bit of extra
+    		//but when we send it over the wire, we lose content - it gets mangled slightly.
+    		//....so we're going to base64encode it (even though it already is) again
+    		//and unecnode it twice on the other end.
+
+    		var postResults =  $.ajax({
+			  type: "POST",
+			  url: "input",
+			  data: btoa(drawingData),   //btoa base64encodes the string
+			  success: null,
+			  dataType: "text"
+			});
+
+
 
     		// taking this from http://api.jquery.com/jquery.post/
 

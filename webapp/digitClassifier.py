@@ -2,6 +2,8 @@
 from scipy import ndimage, misc
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
+from skimage.transform import resize as imageresize
+import base64
 
 
 def loadInitialData(datafile):
@@ -37,6 +39,38 @@ def trainClassifier(X):
 	knn.fit(X, y)
 	return knn
 
+def convertBase64ToImageArray(rawdata):
+    rawdata = rawdata+"=="
+    trimmed = rawdata[22:]   #we need to trim the begining of the blob
+    decodedString = base64.decodestring(trimmed)
+    
+    #May god have mercy on my soul for this horrible hack
+    tempfile = 'tempfile.png'
+    f = open(tempfile, 'w')
+    f.write(decodedString)
+    f.close()
+    theActualImage = ndimage.imread(tempfile)
+
+    theActualImage = theActualImage[:,:,3]  #we only want the last of the 4 dimensions
+    return theActualImage
+
+
+
+def scaleImageTo20px(rawimage):
+    smallimage = imageresize(rawimage, (20,20))
+#     smallimage = smallimage.reshape(400,)
+    
+    return smallimage
+
+def writeImageToFile(rawimage, filename):
+	"""writeImageToFile(rawimage, filename) -- both strings"""
+	# filename = 'thefile.png'
+	decodedString = base64.decodestring(rawimage[22:])
+
+	f = open(filename, 'w')
+	f.write(decodedString)
+	f.close()
+	return
 
 # def predcitDigit(digitArray):
 

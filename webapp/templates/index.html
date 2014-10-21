@@ -38,8 +38,17 @@
     
     	function jsDownloadImage() {
     		var drawingData = $('#simple_sketch')[0].toDataURL();
-    		testOutput(btoa(drawingData));    //DEBUG code
     		
+    		var trimmedData = drawingData.slice(22)
+    		// console.log(trimmedData)
+
+    		testOutput(trimmedData);    //DEBUG code
+    		binaryBlob = atob(trimmedData)    //atob decodes base64 to binary
+    		     //trimmedData = btoa(trimmedData)    //encode binary as base64 again
+			
+			var formData = new FormData();   //http://stackoverflow.com/questions/19148065/how-to-post-binary-file-from-jquery-client-to-java-server-using-rest
+			formData.append('theimage', trimmedData)
+
     		//yet another insane hack.
     		//drawingData represents ~base64 encoded PNG image. Including a bit of extra
     		//but when we send it over the wire, we lose content - it gets mangled slightly.
@@ -49,7 +58,9 @@
     		var postResults =  $.ajax({
 			  type: "POST",
 			  url: "input",
-			  data: btoa(drawingData),   //btoa base64encodes the string
+			  data: formData,   //btoa base64encodes the string
+			  processData: false,
+			  contentType: false,
 			  success: null,
 			  dataType: "text"
 			});

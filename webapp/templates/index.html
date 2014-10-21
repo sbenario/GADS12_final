@@ -38,8 +38,7 @@
     
     	function jsDownloadImage() {
     		var drawingData = $('#simple_sketch')[0].toDataURL();
-    		testOutput(btoa(drawingData));
-    		//var postResults = $.post("input", drawingData, null, "binary/octet-stream");
+    		testOutput(btoa(drawingData));    //DEBUG code
     		
     		//yet another insane hack.
     		//drawingData represents ~base64 encoded PNG image. Including a bit of extra

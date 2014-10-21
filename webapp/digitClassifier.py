@@ -42,6 +42,7 @@ def trainClassifier(X):
 def convertBase64ToImageArray(rawdata):
     rawdata = rawdata+"=="
     trimmed = rawdata[22:]   #we need to trim the begining of the blob
+    print 'trimmed is: ', trimmed
     decodedString = base64.decodestring(trimmed)
     
     #May god have mercy on my soul for this horrible hack
@@ -52,14 +53,15 @@ def convertBase64ToImageArray(rawdata):
     theActualImage = ndimage.imread(tempfile)
 
     theActualImage = theActualImage[:,:,3]  #we only want the last of the 4 dimensions
+
+    #we don't shrink this yet so that it can still be accessed for debugging purposes
     return theActualImage
 
 
-
-def scaleImageTo20px(rawimage):
-    smallimage = imageresize(rawimage, (20,20))
+def scaleImageTo20px(arrayOfImage):
+    smallimage = imageresize(arrayOfImage, (20,20))
 #     smallimage = smallimage.reshape(400,)
-    
+	#image is being returned in a 20x20 array. Needs to be reshaped still.
     return smallimage
 
 def writeImageToFile(rawimage, filename):
@@ -72,6 +74,20 @@ def writeImageToFile(rawimage, filename):
 	f.close()
 	return
 
-# def predcitDigit(digitArray):
+def predictDigit(clf, digitArray):
+	"""input is a 20x20 array of a small image. Output is tuple(predicted value, array of probabilities)"""
+	features = digitArray.reshape(400,)
+	return clf.predict(features)
+
+def decodeBadPaddingBase64(string64):
+	"""Given a base64 encoded string which is missing some number of = on the end, add them and decode the string"""
+	for stringoptions in [string64, string64+"=", string64+"=="]:
+		try:
+			return base64.decodestring(stringoptions)
+		except:
+			pass
+
+
+
 
 

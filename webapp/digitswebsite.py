@@ -10,6 +10,9 @@ print 'Loading model...'
 print 'I guess I can do other stuff up here...'
 
 X = digitClassifier.loadInitialData('static/trainingdata.png')
+knn = digitClassifier.trainClassifier(X)
+
+
 
 # import views
 
@@ -26,28 +29,33 @@ def index():
 @app.route('/input', methods=['POST'])
 def numberInput():
 	inputdata =  request.form  #type is unfortunately werkzeug.datastructures.CombinedMultiDict
-
-	# print 'mydata is: ',inputdata
-	# print type(inputdata)
-	# print len(inputdata.keys())
-
+			#GAH!  Looks like now we could use request.get_data, which would work too.
 	#the following will pull our one key out of this weird data structure
-	imageBase64 = ""
+	rawData = ""
 	for key in inputdata.keys():
-		imageBase64 = key
+		rawData = key
 
-	#imagebase64 is the raw data over the wire, which is double-encoded.
-	imageBase64 = base64.decodestring(imageBase64)
+	#rawData is the raw data over the wire, which is double-encoded.
+	print rawData
+	# print type(rawData)
+	print
+
+	#we have discovered that often times the data comes back with bad amounts of padding	
+	decodedOnce = digitClassifier.decodeBadPaddingBase64(rawData)
+
 	#now that we've decoded it once, it should work as expected.
-	
-	digitClassifier.writeImageToFile(imageBase64, 'testoutput.png')
+
+	# digitClassifier.writeImageToFile(imageBase64, 'testoutput.png')
 	print
 	print
 	print
 
-	print digitClassifier.convertBase64ToImageArray(imageBase64)
+	imageArray = digitClassifier.convertBase64ToImageArray(rawData)
+	scaledImageArray = digitClassifier.scaleImageTo20px(imageArray)
 
-	return render_template('results.html')
+	prediction = digitClassifier.predictDigit(knn, scaledImageArray)
+
+	return render_template('results.html', result=prediction )
 
 
 

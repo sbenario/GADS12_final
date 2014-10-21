@@ -29,16 +29,6 @@
 
 
 
-<!-- 
-$.ajax({
-  type: 'POST',
-  url: input,    //url of receiver file on server
-  data: data,    //your data
-  success: success,    //callback when ajax request finishes
-  dataType: mime     //text/json...
-}); -->
-
-
 
 	 <script type="text/javascript">
   		$(function() {
@@ -46,8 +36,16 @@ $.ajax({
   		});
     
     	function jsDownloadImage() {
-    		var downloadurl = $('#simple_sketch')[0].toDataURL();
-    		testOutput(downloadurl);
+    		var drawingData = $('#simple_sketch')[0].toDataURL();
+    		testOutput(drawingData);
+    		var postResults = $.post("input", drawingData);
+
+    		// taking this from http://api.jquery.com/jquery.post/
+
+    		postResults.done(function (data) {
+    			document.getElementById("output2").innerHTML = data;
+    		})
+
     	};
 
     	function testOutput(output) {

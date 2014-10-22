@@ -3,6 +3,7 @@ from scipy import ndimage, misc
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from skimage.transform import resize as imageresize
+from skimage.transform import rescale as skScale
 import base64
 
 
@@ -40,26 +41,29 @@ def trainClassifier(X):
 	return knn
 
 def convertBase64ToImageArray(rawdata):
-    rawdata = rawdata+"=="
-    trimmed = rawdata[22:]   #we need to trim the begining of the blob
-    print 'trimmed is: ', trimmed
-    decodedString = base64.decodestring(trimmed)
-    
-    #May god have mercy on my soul for this horrible hack
-    tempfile = 'tempfile.png'
-    f = open(tempfile, 'w')
-    f.write(decodedString)
-    f.close()
-    theActualImage = ndimage.imread(tempfile)
+	"""input: base64 encoded PNG file. Output: Image represented as an array"""
 
-    theActualImage = theActualImage[:,:,3]  #we only want the last of the 4 dimensions
+	decodedString = base64.decodestring(rawdata)
 
-    #we don't shrink this yet so that it can still be accessed for debugging purposes
-    return theActualImage
+	#May god have mercy on my soul for this horrible hack
+	tempfile = 'TEMP-FileToProcess.png'
+ 	f = open(tempfile, 'wb')
+	f.write(decodedString)
+	f.close()
+	theActualImage = ndimage.imread(tempfile)
+
+	theActualImage = theActualImage[:,:,3]  #we only want the last of the 4 dimensions
+
+    #we don't scale the image yet so that it can still be accessed for debugging purposes
+	return theActualImage
 
 
 def scaleImageTo20px(arrayOfImage):
-    smallimage = imageresize(arrayOfImage, (20,20))
+    np.set_printoptions(threshold=np.nan)
+    # print 'big array is....'
+    # print arrayOfImage		#DEBUG CODE
+    # smallimage = imageresize(arrayOfImage, (20,20))
+    smallimage = skScale(arrayOfImage, .1) *255
 #     smallimage = smallimage.reshape(400,)
 	#image is being returned in a 20x20 array. Needs to be reshaped still.
     return smallimage
@@ -76,8 +80,12 @@ def writeImageToFile(rawimage, filename):
 
 def predictDigit(clf, digitArray):
 	"""input is a 20x20 array of a small image. Output is tuple(predicted value, array of probabilities)"""
+	print 'and the array were going to predict with is.....'
+	print np.shape(digitArray)
+	print digitArray
 	features = digitArray.reshape(400,)
-	return clf.predict(features)
+	
+	return (clf.predict(features), clf.predict_proba(features))
 
 def decodeBadPaddingBase64(string64):
 	"""Given a base64 encoded string which is missing some number of = on the end, add them and decode the string"""

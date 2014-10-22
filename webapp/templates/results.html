@@ -3,7 +3,10 @@
   </head>
 
 	{% block body %}
-	<h3>{{result}}</h3>
+	<h3>My Prediction is a {{predictedValue}}</h3>
+	<p> The probability for each digit is: {{predictedProbs}}</p>
+	<p class="output"> 
+
 	{% endblock %}
 
 </html>

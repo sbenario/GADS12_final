@@ -14,16 +14,16 @@
 
 
 	<div class="tools">
-      <a href="#simple_sketch" data-download="png" style="float: center; width: 100px;">Download Image</a>
+      <a href="#simple_sketch" data-download="png" style="float: center; width: 100px;">Download Image as PNG</a>
     </div>
+    <BR>
 
-      <canvas id="simple_sketch" width="200" height="200" style="border:1px solid #000000;"></canvas>
+      <canvas id="simple_sketch" data-size="30" width="200" height="200" style="border:1px solid #000000;"></canvas>
       <BR>
 
-      <button onclick="jsDownloadImage()">Click me</button>
+      <button onclick="jsDownloadImage()" >Classify!</button>
 
-      <p id="testing">this is my test text</p>
-      <h3>Test code output below:</h3>
+      <h3>Test/Debug output below:</h3>
 
       <p id="output1">output1</p>
       <p id="output2">output2</p>
@@ -34,6 +34,7 @@
 	 <script type="text/javascript">
   		$(function() {
     		$('#simple_sketch').sketch();
+    		$('#simple_sketch').sketch('size', '20')
   		});
     
     	function jsDownloadImage() {

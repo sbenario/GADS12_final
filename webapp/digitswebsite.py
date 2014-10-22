@@ -31,54 +31,27 @@ def index():
 def numberInput():
 	inputdata =  request.form  #type is unfortunately werkzeug.datastructures.CombinedMultiDict
 	
-	print 'type of inputdata ', type(inputdata)
-	print inputdata
 
-	#the following will pull our one key out of this weird data structure
+
+	#the following will pull our 1 key out of this weird data structure
 	rawData = ""
-	print 'input keys: ', len(inputdata.keys())
+	#print 'input keys: ', len(inputdata.keys())    #DEBUG
+	#							We expect just 1 key
+
 	for key in inputdata.keys():
 		rawData = inputdata[key]
 
-	# stringObject = StringIO.StringIO(rawData)
-	print
-	print
-	print
-	print 'my rawdata:', rawData  #rawdata should now be a binary blob
-	print
-	print
-	print len(rawData)
-	print type(rawData)    #RAWDATA IS NOW THE SAME BASE64 STRING AS ON THE CLIENT!!!
-	t = open('binarypng.png', 'wb')
-	t.write(rawData)
-	t.close()
-	print
-	print base64.encodestring(rawData)
-	print
+	#rawData is now the same Base64 encoded string we had on the client
+	
 	imageArray = digitClassifier.convertBase64ToImageArray(rawData)
+	scaledImageArray = digitClassifier.scaleImageTo20px(imageArray)
 
-	# #rawData is the raw data over the wire, which is double-encoded.
-	# # print str(rawData)
-	# # print type(rawData)
-	# print
+	predictionObject = digitClassifier.predictDigit(knn, scaledImageArray)
+	# prediction = "Pass through successful"
 
-	# #we have discovered that often times the data comes back with bad amounts of padding	
-	# # decodedOnce = digitClassifier.decodeBadPaddingBase64(rawData)
-
-	# #now that we've decoded it once, it should work as expected.
-
-	# # digitClassifier.writeImageToFile(imageBase64, 'testoutput.png')
-	# print
-	# print
-	# print
-
-	# imageArray = digitClassifier.convertBase64ToImageArray(rawData)
-	# scaledImageArray = digitClassifier.scaleImageTo20px(imageArray)
-
-	# prediction = digitClassifier.predictDigit(knn, scaledImageArray)
-	prediction = "Pass through successful"
-
-	return render_template('results.html', result=prediction )
+	return render_template('results2.html', 
+		predictedValue=predictionObject[0], 
+		predictedProbs=predictionObject[1])
 
 
 

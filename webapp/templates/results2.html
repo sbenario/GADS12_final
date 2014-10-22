@@ -1,0 +1,32 @@
+<html>
+  <head>
+  	<style>
+table, th, td {
+    border: 1px solid black;
+}
+</style>
+
+  </head>
+
+	{% block body %}
+	<h3>My Prediction is a {{predictedValue}}</h3>
+	<p> The probability for each digit is: </p>
+	<p class="output">
+
+<table>
+  
+  <tr>
+    <th>Digit</th>
+    <th>Probability</th>
+  </tr>
+
+{% for i in range(10) %}
+	<tr>
+		<td> {{i}} </td>
+		<td> {{predictedProbs[0][i] }} </td>
+	</tr>
+{% endfor %}
+</table>
+
+
+	{% endblock %}
